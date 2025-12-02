@@ -79,14 +79,6 @@ The learned weights define smooth trajectories for both x(t) and y(t), from whic
 
 The notebook includes:
 
-- Plot of the **true flight path** for a selected bee, with the starting location highlighted.
-- Visualisation of:
-  - Detector locations
-  - Bearing observations
-  - Reconstructed trajectory vs ground truth
-- Qualitative analysis of:
-  - Posterior uncertainty at specific times (e.g. why the posterior is spread at \(t = 1.8s\))
-  - Behaviour near the sequence boundaries (e.g. path curling back towards the centre due to weaker observation support)
-  - Effect of Gaussian basis width and regularisation on smoothness and overfitting. 
-
----
+- Plot of the true flight path for a selected bee, with the starting point highlighted.
+- Illustration of the geometric relationship between detector location, bearing direction and a predicted bee position.
+- Reconstruction of the bee’s trajectory using Gaussian basis regression, and a comparison of the reconstructed path against the ground-truth trajectory.
