@@ -1,14 +1,13 @@
 # Bee Flight Path Reconstruction with Probabilistic Regression
 
-This project reconstructs the 2D flight path of bumblebees from noisy directional sensor readings using probabilistic modelling and regularised linear regression with Gaussian basis functions. It was originally developed as part of the **COM4509/6509 – Machine Learning and Adaptive Intelligence** module at the **University of Sheffield**. :contentReference[oaicite:3]{index=3}
+This project reconstructs the 2D flight path of bumblebees from noisy directional sensor readings using probabilistic modelling and regularised linear regression with Gaussian basis functions. It was originally developed as part of the **Machine Learning and Adaptive Intelligence** module at the **University of Sheffield**. 
 
 ## Problem Overview
 
 A bee flies in a 2D field while four fixed detectors periodically measure only the **bearing** (direction) of the bee, not its distance. For each flight path we have:
 
 - **truepath**: 100 time-stamped ground-truth positions over 30 seconds  
-- **observations**: a set of rows `[time, detector_x, detector_y, bearing_x, bearing_y]` describing each detector reading :contentReference[oaicite:4]{index=4}  
-
+- **observations**: a set of rows `[time, detector_x, detector_y, bearing_x, bearing_y]` describing each detector reading 
 The goal is to **infer the bee’s continuous trajectory** from these partial, noisy observations.
 
 ---
@@ -28,7 +27,7 @@ For a predicted bee position **p** and an observation **ob**, the model:
 \mathcal{L}(\text{ob} \mid \mathbf{p}) = \frac{\lVert \mathbf{u} - \mathbf{b} \rVert^2}{2\sigma^2}
 \]
 
-where \(\mathbf{u}\) is the predicted unit direction, \(\mathbf{b}\) is the observed bearing and \(\sigma\) is a noise scale hyperparameter. This is derived from a Gaussian error model over the direction mismatch. :contentReference[oaicite:5]{index=5}  
+where \(\mathbf{u}\) is the predicted unit direction, \(\mathbf{b}\) is the observed bearing and \(\sigma\) is a noise scale hyperparameter. This is derived from a Gaussian error model over the direction mismatch. 
 
 This is implemented in:
 
@@ -44,7 +43,7 @@ f(t) = \sum_{b=1}^{B} w_b \exp\left(-\frac{(t - c_b)^2}{2\alpha^2}\right)
 
 - Basis centres \(c_b \in \{-3, 1, 5, …, 29, 33\}\) seconds  
 - Shared width parameter \(\alpha\) (e.g. 3 s)  
-- Separate weight vectors for x and y coordinates :contentReference[oaicite:6]{index=6}  
+- Separate weight vectors for x and y coordinates
 
 Implemented via:
 
@@ -61,7 +60,7 @@ For a weight vector **w**, observations `obs` and predicted path `predpath`, the
 \]
 
 - First term: sums the directional negative log-likelihood over all observations.
-- Second term: **L2 regularisation** (weight decay) to penalise overly large parameters and improve generalisation. :contentReference[oaicite:7]{index=7}  
+- Second term: **L2 regularisation** (weight decay) to penalise overly large parameters and improve generalisation. 
 
 Implemented via:
 
@@ -70,7 +69,7 @@ Implemented via:
 ### 4. Parameter Optimisation
 
 - Initial weights are sampled from a Gaussian distribution.
-- The cost function is minimised (e.g. via gradient-based optimisation or scipy’s optimisers) to obtain a **MAP estimate** of the trajectory parameters under the Gaussian prior induced by the L2 term. :contentReference[oaicite:8]{index=8}  
+- The cost function is minimised (e.g. via gradient-based optimisation or scipy’s optimisers) to obtain a **MAP estimate** of the trajectory parameters under the Gaussian prior induced by the L2 term.  
 
 The learned weights define smooth trajectories for both x(t) and y(t), from which the 2D bee path is reconstructed.
 
@@ -88,6 +87,6 @@ The notebook includes:
 - Qualitative analysis of:
   - Posterior uncertainty at specific times (e.g. why the posterior is spread at \(t = 1.8s\))
   - Behaviour near the sequence boundaries (e.g. path curling back towards the centre due to weaker observation support)
-  - Effect of Gaussian basis width and regularisation on smoothness and overfitting. :contentReference[oaicite:9]{index=9}  
+  - Effect of Gaussian basis width and regularisation on smoothness and overfitting. 
 
 ---
