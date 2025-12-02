@@ -23,48 +23,48 @@ For a predicted bee position **p** and an observation **ob**, the model:
 3. Forms an **error vector** as the difference of these two unit vectors.
 4. Defines the **unnormalised negative log-likelihood** as:
 
-\[
-\mathcal{L}(\text{ob} \mid \mathbf{p}) = \frac{\lVert \mathbf{u} - \mathbf{b} \rVert^2}{2\sigma^2}
-\]
+L(ob | p) = (‖u − b‖²) / (2 * sigma²)
 
-where \(\mathbf{u}\) is the predicted unit direction, \(\mathbf{b}\) is the observed bearing and \(\sigma\) is a noise scale hyperparameter. This is derived from a Gaussian error model over the direction mismatch. 
+where:
+- u is the predicted unit direction,
+- b is the observed bearing, and
+- sigma is a noise scale hyperparameter.
+
+This is derived from a Gaussian error model over the direction mismatch.
 
 This is implemented in:
+- negloglikelihood(ob, p, noise_scale=0.1)
 
-- `negloglikelihood(ob, p, noise_scale=0.1)`
 
 ### 2. Trajectory Model: Gaussian Basis Regression
 
 The bee’s x(t) and y(t) coordinates are modelled independently with a **linear combination of Gaussian basis functions**:
 
-\[
-f(t) = \sum_{b=1}^{B} w_b \exp\left(-\frac{(t - c_b)^2}{2\alpha^2}\right)
-\]
+f(t) = Σ ( w_b * exp( − (t − c_b)² / (2 * alpha²) ) )
 
-- Basis centres \(c_b \in \{-3, 1, 5, …, 29, 33\}\) seconds  
-- Shared width parameter \(\alpha\) (e.g. 3 s)  
+- Basis centres c_b ∈ {−3, 1, 5, …, 29, 33} seconds  
+- Shared width parameter alpha (e.g. 3 s)  
 - Separate weight vectors for x and y coordinates
 
 Implemented via:
 
 - `getpred(T, w, width=3)` → predicts positions at times `T` for a given weight vector `w`.
 
+---
+
 ### 3. Total Objective: Regularised Negative Log-Likelihood
 
 For a weight vector **w**, observations `obs` and predicted path `predpath`, the **total cost** is:
 
-\[
-\mathcal{J}(\mathbf{w}) =
-\sum_{i=1}^{N} \text{NLL}(\text{ob}_i \mid \mathbf{p}_i, \sigma^2)
-+ \lambda \sum_{b=1}^{B} w_b^2
-\]
+J(w) = Σ NLL(ob_i | p_i, sigma²)  +  lambda * Σ (w_b²)
 
-- First term: sums the directional negative log-likelihood over all observations.
-- Second term: **L2 regularisation** (weight decay) to penalise overly large parameters and improve generalisation. 
+- First term: sums the directional negative log-likelihood over all observations.  
+- Second term: **L2 regularisation** (weight decay) to penalise overly large weights and improve generalisation.
 
 Implemented via:
 
 - `totalnegloglikelihood(w, obs, reg=0.001, noise_scale=0.1)`
+
 
 ### 4. Parameter Optimisation
 
